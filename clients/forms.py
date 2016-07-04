@@ -34,7 +34,6 @@ class CreateUserForm(forms.ModelForm):
 		fields = ('username', 'password', 'email')
 
 class EditUserForm(forms.ModelForm):
-
 	username = forms.CharField(max_length = 20, error_messages = ERROR_MESSAGE_USER )
 	email = forms.CharField(error_messages = ERROR_MESSAGE_EMAIL)
 
@@ -44,5 +43,11 @@ class EditUserForm(forms.ModelForm):
 
 class EditPasswordForm(forms.Form):
 	password = forms.CharField(max_length = 20, widget = forms.PasswordInput())
-	new_assword = forms.CharField(max_length = 20, widget = forms.PasswordInput())
+	new_password = forms.CharField(max_length = 20, widget = forms.PasswordInput())
 	repeat_password = forms.CharField(max_length = 20, widget = forms.PasswordInput())
+
+	def clean_new_password(self):
+		value_password = self.cleaned_data['new_password']
+		if len(value_password) < 5:
+			raise forms.ValidationError('El password debe contener al menos 5 caracteres')
+		value_password

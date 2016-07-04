@@ -23,6 +23,9 @@ from django.views.generic.edit import UpdateView
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
 
+"""
+Class
+"""
 
 class ShowView(DetailView):
 	model = User
@@ -88,6 +91,17 @@ class Edit(UpdateView):
 		return self.request.user
 
 
+"""
+Functions
+"""
+
+def edit_password(request):
+	form = EditPasswordForm(request.POST or None)
+	if form.is_valid():
+		print "Formulario valido"
+
+	context = {'form':form}
+	return render(request, 'edit_password.html', context)
 
 
 @login_required( login_url = 'client:login' )
