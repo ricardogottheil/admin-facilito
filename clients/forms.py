@@ -47,4 +47,10 @@ class EditPasswordForm(forms.Form):
 	new_password = forms.CharField(max_length = 20, widget = forms.PasswordInput(), validators = [muts_be_gt])
 	repeat_password = forms.CharField(max_length = 20, widget = forms.PasswordInput(), validators = [muts_be_gt])
 
-	
+	def clean(self):
+		clean_data = super(EditPasswordForm,self).clean()
+		password1 = clean_data['new_password']
+		password2 = clean_data['repeat_password']
+
+		if password1 != password2:
+			raise forms.ValidationError('Los password no son los mismos')

@@ -23,6 +23,8 @@ from django.views.generic.edit import UpdateView
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
 
+from django.contrib.auth import update_session_auth_hash
+
 """
 Class
 """
@@ -96,11 +98,22 @@ Functions
 """
 
 def edit_password(request):
+	message = None
 	form = EditPasswordForm(request.POST or None)
-	if form.is_valid():
-		print "Formulario valido"
 
-	context = {'form':form}
+	if request.method == 'POST':
+		if form.is_valid():
+			current_password = form.cleaned_data['password']
+			new_password = form.cleaned_data['new_password']
+
+			if authenticate(username = request.user.username, password = current_password):
+				request.user.set_password(new_password)
+				request.user.save()
+
+				update_session_auth_hash(request, request.user)
+				message = "Password actualizada"
+
+	context = {'form':form, 'message':message}
 	return render(request, 'edit_password.html', context)
 
 
