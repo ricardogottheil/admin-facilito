@@ -6,37 +6,38 @@ from django.shortcuts import redirect
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as login_django
 from django.contrib.auth import logout as logout_django
+from django.contrib.auth import update_session_auth_hash
 
 from django.contrib.auth.decorators import login_required
 
-from forms import LoginForm
+from forms import LoginUserForm
 from forms import CreateUserForm
 from forms import EditUserForm
 from forms import EditPasswordForm
 
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 from django.views.generic import DetailView
 from django.views.generic import CreateView
 from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
 
-from django.contrib.auth import update_session_auth_hash
+
 
 """
 Class
 """
 
-class ShowView(DetailView):
+class ShowClass(DetailView):
 	model = User
 	template_name = 'show.html'
 	slug_field = 'username'  #Que campo de la base de datos
 	slug_url_kwarg = 'username_url'  #Que de la url
 
-class LoginView(View):
-	form = LoginForm()
+class LoginClass(View):
+	form = LoginUserForm()
 	message = None
 	template = 'login.html'
 
@@ -62,7 +63,7 @@ class LoginView(View):
 		return {'form':self.form, 'message': self.message}
 
 
-class DashboardView(LoginRequiredMixin, View):
+class DashboardClass(LoginRequiredMixin, View):
 	login_url = 'client:login'
 
 	def get(self, request, *args, **kwargs):
@@ -70,7 +71,7 @@ class DashboardView(LoginRequiredMixin, View):
 
 
 
-class Create(CreateView):
+class CreateClass(CreateView):
 	success_url = reverse_lazy('client:login')
 	template_name = 'create.html'
 	model = User
@@ -83,7 +84,8 @@ class Create(CreateView):
 		return HttpResponseRedirect(self.get_success_url())
 
 
-class Edit(UpdateView):
+class EditClass(LoginRequiredMixin, UpdateView):
+	login_url = 'client:login'
 	model = User
 	template_name = 'edit.html'
 	success_url = reverse_lazy('client:dashboard')
@@ -97,6 +99,7 @@ class Edit(UpdateView):
 Functions
 """
 
+@login_required( login_url = 'client:login' )
 def edit_password(request):
 	message = None
 	form = EditPasswordForm(request.POST or None)
