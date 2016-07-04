@@ -11,11 +11,12 @@ ERROR_MESSAGE_EMAIL = {'required': 'El email es requerido','invalid': 'Ingrese u
 
 
 """
-Funcion
+Function
 """
-def must_be_gt(value_password):
+
+def muts_be_gt(value_password):
 	if len(value_password) < 5:
-		raise forms.ValidationError('El password debe contener por lo menos 5 caracteres, desde una func')
+		raise forms.ValidationError('El password debe contener al menos 5 caracteres, desde una func')
 
 """
 Class 
@@ -43,11 +44,7 @@ class EditUserForm(forms.ModelForm):
 
 class EditPasswordForm(forms.Form):
 	password = forms.CharField(max_length = 20, widget = forms.PasswordInput())
-	new_password = forms.CharField(max_length = 20, widget = forms.PasswordInput())
-	repeat_password = forms.CharField(max_length = 20, widget = forms.PasswordInput())
+	new_password = forms.CharField(max_length = 20, widget = forms.PasswordInput(), validators = [muts_be_gt])
+	repeat_password = forms.CharField(max_length = 20, widget = forms.PasswordInput(), validators = [muts_be_gt])
 
-	def clean_new_password(self):
-		value_password = self.cleaned_data['new_password']
-		if len(value_password) < 5:
-			raise forms.ValidationError('El password debe contener al menos 5 caracteres')
-		value_password
+	
