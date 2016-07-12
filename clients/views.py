@@ -24,6 +24,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
 
+from django.contrib import messages
 
 
 """
@@ -101,7 +102,6 @@ Functions
 
 @login_required( login_url = 'client:login' )
 def edit_password(request):
-	message = None
 	form = EditPasswordForm(request.POST or None)
 
 	if request.method == 'POST':
@@ -114,9 +114,11 @@ def edit_password(request):
 				request.user.save()
 
 				update_session_auth_hash(request, request.user)
-				message = "Password actualizada"
+				messages.success(request, 'Password actualizado, messages')
+			else:
+				messages.error(request, 'No es posible actualizar el password, messages')
 
-	context = {'form':form, 'message':message}
+	context = {'form':form}
 	return render(request, 'edit_password.html', context)
 
 
