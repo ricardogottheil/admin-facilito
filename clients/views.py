@@ -25,6 +25,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
 
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 """
@@ -85,12 +86,17 @@ class CreateClass(CreateView):
 		return HttpResponseRedirect(self.get_success_url())
 
 
-class EditClass(LoginRequiredMixin, UpdateView):
+class EditClass(LoginRequiredMixin, UpdateView, SuccessMessageMixin):
 	login_url = 'client:login'
 	model = User
 	template_name = 'edit.html'
-	success_url = reverse_lazy('client:dashboard')
+	success_url = reverse_lazy('client:edit')
 	form_class = EditUserForm
+	success_message = "Tu usuario ha sido actualizado."
+
+	def form_valid(self, request, *args, **kwargs):
+		messages.success(self.request, self.success_message)
+		return super(EditClass, self).form_valid(request, *args, **kwargs)
 
 	def get_object(self, queryset=None):
 		return self.request.user
