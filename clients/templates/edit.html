@@ -1,27 +1,13 @@
-{% load staticfiles %}
+{% extends 'bases/edit_base.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Edit</title>
-	<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-</head>
-<body>
-	<h3>Edit password</h3>
+{% block title %} Editar Usuario {% endblock %}
 
-	{% if messages %}
-		<ul>
-		{% for message in messages %}
-			<li {% if message.tags %} class="{{message.tags}}_message" {%endif%} >{{ message }}</li>
-		{% endfor %}
-		</ul>
-	{% endif %}
+{% block subtitle %} Editar Usuario {% endblock %}
 
+{% block content %}
 	<form method="post" action="">
 		{% csrf_token %}
 		{{ form.as_p }}
-		<input type="submit" value="Ingreso">
+		<input type="submit" value="Actualizar">
 	</form>
-</body>
-</html>
+{% endblock %}
